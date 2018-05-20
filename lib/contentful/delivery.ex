@@ -23,10 +23,10 @@ defmodule Contentful.Delivery do
   def entries(space_id, access_token, params \\ %{}) do
     entries_url = "/spaces/#{space_id}/entries"
 
-    with {:ok, body} <-
-           contentful_request(entries_url, access_token, Map.delete(params, "resolve_includes")) do
-      parse_entries(body, params)
-    else
+    result = contentful_request(entries_url, access_token, Map.delete(params, "resolve_includes"))
+
+    case result do
+      {:ok, body} -> parse_entries(body, params)
       error -> error
     end
   end

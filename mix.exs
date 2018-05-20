@@ -1,11 +1,11 @@
 defmodule Contentful.Mixfile do
   use Mix.Project
 
-  def project do
+  def project() do
     [
       app: :contentful,
       version: "0.1.1",
-      elixir: "~> 1.2",
+      elixir: "~> 1.6",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
       description: description(),
@@ -23,7 +23,7 @@ defmodule Contentful.Mixfile do
   # Configuration for the OTP application
   #
   # Type "mix help compile.app" for more information
-  def application do
+  def application() do
     [
       applications: [
         :logger,
@@ -41,22 +41,22 @@ defmodule Contentful.Mixfile do
   #   {:mydep, git: "https://github.com/elixir-lang/mydep.git", tag: "0.1.0"}
   #
   # Type "mix help deps" for more examples and options
-  defp deps do
+  defp deps() do
     [
-      {:httpoison, "~> 0.8"},
-      {:poison, "~> 2.0"},
-      {:exvcr, "~> 0.7", only: :test},
+      {:httpoison, "~> 1.1"},
+      {:poison, "~> 3.1"},
+      {:exvcr, "~> 0.10", only: :test},
       {:dogma, "~> 0.1", only: :dev}
     ]
   end
 
-  defp description do
+  defp description() do
     """
     Contentful Content Delivery API SDK
     """
   end
 
-  defp package do
+  defp package() do
     # These are the default files included in the package
     [
       name: :contentful,

@@ -1,7 +1,6 @@
 defmodule Contentful.IncludeResolverTest do
   use ExUnit.Case
   alias Contentful.Delivery
-  alias Contentful.IncludeResolver
   use ExVCR.Mock, adapter: ExVCR.Adapter.Hackney
 
   @access_token "ACCESS_TOKEN"
@@ -14,9 +13,14 @@ defmodule Contentful.IncludeResolverTest do
   @tag timeout: 10000
   test "entries" do
     use_cassette "entries" do
-      entries = Delivery.entries(@space_id, @access_token, %{"resolve_includes" => true})
+      {:ok, entries} = Delivery.entries(@space_id, @access_token, %{"resolve_includes" => true})
 
-      assert is_list(entries)
+      assert is_map(entries)
+      assert entries["includes"]
+      assert entries["includes"]["Asset"]
+      [asset | _] = entries["includes"]["Asset"]
+      assert asset["fields"]
+      assert asset["fields"]["description"] == "Taken on January 1, 1855"
     end
   end
 
@@ -25,7 +29,7 @@ defmodule Contentful.IncludeResolverTest do
     use_cassette "single_entry_with_includes" do
       space_id = "if4k9hkjacuz"
 
-      entries =
+      {:ok, entries} =
         Delivery.entries(space_id, @access_token, %{
           "content_type" => "6pFEhaSgDKimyOCE0AKuqe",
           "fields.slug" => "test-page",
@@ -33,7 +37,13 @@ defmodule Contentful.IncludeResolverTest do
           "resolve_includes" => true
         })
 
-      assert is_list(entries)
+      assert is_map(entries)
+      assert entries["includes"]
+      assert entries["includes"]["Asset"]
+      [asset | _] = entries["includes"]["Asset"]
+      assert asset["fields"]
+      assert asset["fields"]["file"]
+      assert asset["fields"]["file"]["contentType"] == "image/jpeg"
     end
   end
 
